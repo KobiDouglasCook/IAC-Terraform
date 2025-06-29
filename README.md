@@ -15,6 +15,7 @@ This infrastructure deploys a complete EKS-based Kubernetes cluster with the fol
 * **Containerized Application Deployment**
 * **Monitoring via CloudWatch Agent**
 * **DNS with Route 53** pointing to Kubernetes load balancer
+* **CI/CD with Github Actions** allowing for safe deployment and app integration
 
 ---
 
