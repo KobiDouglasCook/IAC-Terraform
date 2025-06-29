@@ -112,12 +112,29 @@ terraform apply
 
 ---
 
-## 📦 CI/CD (Coming Soon)
+## 📦 CI/CD
 
-CI/CD with GitHub Actions will support:
+CI/CD is implemented using GitHub Actions and supports the following workflows:
 
-* `terraform plan` on pull request
-* `terraform apply` on merge to main
+* **Pull Requests to `main`**:
+
+  * Runs `terraform fmt`, `validate`, and `plan`
+
+* **Merges to `main`**:
+
+  * Executes `terraform apply` automatically
+
+### 🧪 Workflow Files
+
+Located in `.github/workflows/`:
+
+* `terraform-plan.yml`: Runs on PRs
+* `terraform-apply.yml`: Runs on push to `main`
+
+Ensure that the repository has GitHub secrets set:
+
+* `AWS_ACCESS_KEY_ID`
+* `AWS_SECRET_ACCESS_KEY`
 
 ---
 
