@@ -1,27 +1,26 @@
-Fuego Cloud Infrastructure
+# Fuego Cloud Infrastructure
 
 This repository contains the Terraform configuration and Kubernetes manifests for provisioning a scalable, production-ready EKS (Elastic Kubernetes Service) environment on AWS. It is modularized to promote reusability, security, and observability.
 
-🚀 Overview
+---
+
+## 🚀 Overview
 
 This infrastructure deploys a complete EKS-based Kubernetes cluster with the following features:
 
-Modular Terraform Code: Separated into modules (networking, EKS, DNS, node groups, CloudWatch)
+* **Modular Terraform Code**: Separated into modules (networking, EKS, DNS, node groups, CloudWatch)
+* **Remote State Management**: Uses S3 and DynamoDB for backend state and locking
+* **EKS Control Plane & Managed Node Groups**
+* **Manual IAM Role Mapping** via `aws-auth`
+* **Containerized Application Deployment**
+* **Monitoring via CloudWatch Agent**
+* **DNS with Route 53** pointing to Kubernetes load balancer
 
-Remote State Management: Uses S3 and DynamoDB for backend state and locking
+---
 
-EKS Control Plane & Managed Node Groups
+## 🧱 Folder Structure
 
-Manual IAM Role Mapping via aws-auth
-
-Containerized Application Deployment
-
-Monitoring via CloudWatch Agent
-
-DNS with Route 53 pointing to Kubernetes load balancer
-
-🧱 Folder Structure
-
+```
 .
 ├── bootstrap/                # S3 and DynamoDB backend setup
 ├── infrastructure/          # Main Terraform root module
@@ -35,11 +34,15 @@ DNS with Route 53 pointing to Kubernetes load balancer
 │   ├── networking/
 │   └── security/
 └── .github/workflows/       # (For GitHub Actions workflows)
+```
 
-🔐 Backend Configuration
+---
+
+## 🔐 Backend Configuration
 
 Terraform uses an S3 bucket and DynamoDB table for state and locking:
 
+```hcl
 backend "s3" {
   bucket         = "devops-kobi-tf-state"
   key            = "infra/terraform.tfstate"
@@ -47,55 +50,57 @@ backend "s3" {
   dynamodb_table = "terraform_state_locking"
   encrypt        = true
 }
+```
 
-🌐 Components
+---
 
-1. Networking
+## 🌐 Components
 
-Creates a VPC, public/private subnets, internet gateway, route tables
+### 1. **Networking**
 
-2. EKS Cluster
+* Creates a VPC, public/private subnets, internet gateway, route tables
 
-Provisions the EKS control plane
+### 2. **EKS Cluster**
 
-Enables IRSA and control plane logging
+* Provisions the EKS control plane
+* Enables IRSA and control plane logging
 
-3. Node Group (Manual Role)
+### 3. **Node Group (Manual Role)**
 
-IAM role for worker nodes is manually defined for greater control
+* IAM role for worker nodes is manually defined for greater control
+* Role is mapped to `aws-auth` using a separate module
 
-Role is mapped to aws-auth using a separate module
+### 4. **AWS Auth**
 
-4. AWS Auth
+* Maps IAM users and node group role to Kubernetes RBAC
+* Allows specified IAM user to have `system:masters` access
 
-Maps IAM users and node group role to Kubernetes RBAC
+### 5. **Kubernetes Resources**
 
-Allows specified IAM user to have system:masters access
+* Application manifests deployed via Terraform
+* Dynamically rendered YAML with variables
 
-5. Kubernetes Resources
+### 6. **Monitoring (CloudWatch)**
 
-Application manifests deployed via Terraform
+* CloudWatch Agent DaemonSet deployed for log and metric collection
 
-Dynamically rendered YAML with variables
+### 7. **DNS (Route 53)**
 
-6. Monitoring (CloudWatch)
+* A CNAME record points to the EKS load balancer for external access
 
-CloudWatch Agent DaemonSet deployed for log and metric collection
+---
 
-7. DNS (Route 53)
+## ⚙️ Requirements
 
-A CNAME record points to the EKS load balancer for external access
+* Terraform 1.8+
+* AWS CLI configured
+* IAM user with full EKS, IAM, and S3/DynamoDB access
 
-⚙️ Requirements
+---
 
-Terraform 1.8+
+## 🛠️ Commands
 
-AWS CLI configured
-
-IAM user with full EKS, IAM, and S3/DynamoDB access
-
-🛠️ Commands
-
+```bash
 # Setup backend (run from bootstrap/)
 terraform init
 terraform apply
@@ -103,16 +108,19 @@ terraform apply
 # Provision infrastructure (run from infrastructure/)
 terraform init
 terraform apply
+```
 
-📦 CI/CD (Coming Soon)
+---
+
+## 📦 CI/CD (Coming Soon)
 
 CI/CD with GitHub Actions will support:
 
-terraform plan on pull request
+* `terraform plan` on pull request
+* `terraform apply` on merge to main
 
-terraform apply on merge to main
+---
 
-📬 Contact
+## 📬 Contact
 
-This infrastructure was built for fuego-cloud by Kobi Cook. Contributions, improvements, and questions are welcome!
-
+This infrastructure was built for `fuego-cloud` by Kobi Cook. Contributions, improvements, and questions are welcome!
