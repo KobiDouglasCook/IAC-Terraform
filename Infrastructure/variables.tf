@@ -35,3 +35,14 @@ variable "environment" {
   type        = string
   default     = "dev"
 }
+
+variable "alb_dns_name" {
+  description = "dns name of the load balancer"
+  type        = string
+  default     = " "
+}
+variable "alb_zone_id" {
+  description = "zone id of the load balancer"
+  type        = string
+  default     = " "
+}

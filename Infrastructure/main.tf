@@ -27,8 +27,10 @@ provider "aws" {
 
 # DNS
 module "dns" {
-  source = "../modules/dns"
-  domain = var.domain
+  source       = "../modules/dns"
+  domain       = var.domain
+  alb_dns_name = var.alb_dns_name
+  alb_zone_id  = var.alb_zone_id
 }
 
 # Networking
