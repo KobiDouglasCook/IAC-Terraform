@@ -139,6 +139,60 @@ Ensure that the repository has GitHub secrets set:
 
 ---
 
+## 📘 Terraform Infrastructure Setup Script
+
+This repository includes a fully automated Bash script (`deploy.sh`) that provisions AWS infrastructure using Terraform, sets up an EKS cluster, deploys Kubernetes manifests, and configures DNS with Route 53.
+
+### 🔧 Prerequisites
+
+Ensure the following tools are installed and configured:
+
+- [Terraform](https://developer.hashicorp.com/terraform/install)
+- [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
+- [kubectl](https://kubernetes.io/docs/tasks/tools/)
+- AWS credentials configured via `aws configure` or assumed IAM role
+- (Optional) Existing Route 53 hosted zone for DNS setup
+
+### 📜 Script Overview
+
+The `deploy.sh` script executes the following steps:
+
+1. **Pre-flight Checks** – Validates that required tools are installed and AWS credentials are active.
+2. **Backend Bootstrapping** – Initializes the Terraform backend (S3 + DynamoDB).
+3. **EKS Provisioning** – Applies the Terraform module to create the EKS cluster.
+4. **Kubeconfig Update** – Authenticates `kubectl` with the new EKS cluster.
+5. **Kubernetes Deployment** – Applies Kubernetes manifests (Deployment + Service).
+6. **Load Balancer Discovery** – Waits for ELB provisioning and extracts DNS hostname.
+7. **Route 53 Configuration** – Writes DNS variables and applies Route 53 records via Terraform.
+8. **Cleanup** – Deletes existing Kubernetes Deployment/Service (if any) to avoid recreation errors.
+9. **Final Apply** – Applies all remaining Terraform infrastructure.
+
+### ▶️ Usage
+
+```bash
+chmod +x deploy.sh
+./deploy.sh
+```
+
+### 🧼 Teardown
+
+First destroy all infrastructure:
+
+```bash
+cd infrastructure
+terraform destroy -auto-approve
+
+```
+
+Last destroy the backend resources:
+
+```bash
+cd ../bootstrap
+terraform destroy -auto-approve
+
+```
+
+
 ## 📬 Contact
 
 This infrastructure was built for `fuego-cloud` by Kobi Cook. Contributions, improvements, and questions are welcome!
