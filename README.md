@@ -173,25 +173,22 @@ The `deploy.sh` script executes the following steps:
 chmod +x deploy.sh
 ./deploy.sh
 ```
+---
 
 ### 🧼 Teardown
 
-First destroy all infrastructure:
-
 ```bash
+# First destroy all infrastructure
 cd infrastructure
 terraform destroy -auto-approve
 
-```
-
-Last destroy the backend resources:
-
-```bash
+# Last destroy the backend resources
 cd ../bootstrap
 terraform destroy -auto-approve
 
 ```
 
+---
 
 ## 📬 Contact
 
