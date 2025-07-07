@@ -118,4 +118,4 @@ sleep 5
 echo ">>> Applying all remaining Terraform resources..."
 terraform apply -auto-approve
 
-echo "Terraform setup complete!"
+echo "Terraform Setup Complete!"
